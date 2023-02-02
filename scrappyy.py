@@ -1,21 +1,22 @@
 import requests
-import time
 from bs4 import BeautifulSoup
 
-headers = {
-    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.82 Safari/537.36'
-}
+base_url = "https://www.idealcars.fr/"
+uri = '/vente-de-voitures-w1.html'
+response = requests.get(base_url + uri)
 
-base_url = "https://www.idealcars.fr/vente-de-voitures-w1.html"
-
-response = requests.get(base_url, headers=headers)
+def process(soup):
+    links = []
+    divs = soup.findAll('div', {"class": "ann-titre display-block position-relative"})
+    for div in divs :
+        car_links = div.findAll("h2", class_="normal-padding-bottom")
+        for car in car_links :
+            car_links = car.findAll('a') 
+            for car_link in car_links :
+                links.append(car_link.get('href'))
+    for link in links :
+        print(link)
 
 if response.ok:
     soup = BeautifulSoup(response.text, 'html.parser')
-
-    car_links = soup.find_all("a", class_="cta-1")
-    for link in car_links:
-        href = link.get("href")
-        print(f"Endpoint: {href}")
-else:
-    print("Impossible d'avoir une réponse de", base_url)
+    process(soup)
