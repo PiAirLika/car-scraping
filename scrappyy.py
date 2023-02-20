@@ -13,9 +13,9 @@ def process(soup):
         for car in car_links :
             car_links = car.findAll('a') 
             for car_link in car_links :
-                links.append(car_link.get('href'))
-    for link in links :
-        print(link)
+                links.append(base_url + car_link.get('href'))
+    for index, link in enumerate(links) :
+        print(f"Voiture n° {index + 1}: {link}")
 
 if response.ok:
     soup = BeautifulSoup(response.text, 'html.parser')
